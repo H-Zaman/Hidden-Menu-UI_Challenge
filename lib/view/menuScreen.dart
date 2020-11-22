@@ -15,6 +15,7 @@ class _MenuScreenState extends State<MenuScreen> {
   bool toggle = true;
 
   double axisY;
+  ItemModel selectedItem;
 
   @override
   void initState() {
@@ -123,15 +124,16 @@ class _MenuScreenState extends State<MenuScreen> {
         transform: Matrix4.identity()..translate(0.0, axisY ?? MediaQuery.of(context).size.height - 170),
         duration: duration*1.5,
         width: double.infinity,
+        height: MediaQuery.of(context).size.height - (AppBar().preferredSize.height + AppBar().preferredSize.height),
         decoration: BoxDecoration(
-            color: Colors.tealAccent.withOpacity(.5),
+            color: Colors.lightGreenAccent,
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(50),
               topLeft: Radius.circular(50),
             )
         ),
         child: Card(
-          color: Colors.tealAccent,
+          color: Colors.tealAccent.withOpacity(.5),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
                 topRight: Radius.circular(50),
@@ -143,16 +145,104 @@ class _MenuScreenState extends State<MenuScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 20),
             child: Stack(
               children: [
+                SingleChildScrollView(
+                  physics: ClampingScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: 250,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: selectedItem == null ?
+                                NetworkImage('https://images.squarespace-cdn.com/content/v1/560ad474e4b0ce89ae1f42db/1583920602384-069KEAZZ30R0T84CWQ73/ke17ZwdGBToddI8pDm48kI99Su05B8embLeqd-nGa0cUqsxRUqqbr1mOJYKfIPR7LoDQ9mXPOjoJoqy81S2I8N_N4V1vUb5AoIIIbLZhVYxCRW4BPu10St3TBAUQYVKcHAaYB9heftrPVOgeY8nnyY4CsLkUdneJGkI6-EaSbIIUk58xg6u6N_KF02uBIr4B/A+Transparent+Company+Logo+white.png') :
+                                NetworkImage(selectedItem.image)
+                          )
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * .7,
+                            child: Text(
+                              selectedItem == null ? 'None' : selectedItem.title,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 36,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 2,
+                                color: Colors.grey[300]
+                              ),
+                            ),
+                          ),
+                          Spacer(),
+                          Icon(
+                            Icons.star,
+                            size: 20,
+                            color: Colors.grey
+                          ),
+                          Text(
+                            '${selectedItem == null ? 'NaN' : selectedItem.rating} / 5',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 6,),
+                      Text(
+                        'Best time to Visit :',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white70,
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Text(
+                        '- '+ '${selectedItem == null ? 'NaN' : selectedItem.time}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white70
+                        ),
+                      ),
+                      SizedBox(height: 12,),
+                      Text(
+                        'Description :',
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white70,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Text(
+                        '- ' + '${selectedItem == null ? 'NaN' : selectedItem.description}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white70
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 SizedBox(width: double.infinity,),
-                toggle ? AnimatedOpacity(
-                  opacity: toggle ? 1 : 0,
-                  duration: duration,
-                  child: Text(
-                    'Tap a item to see Details',
-                    style: TextStyle(
-                        color: Colors.grey[500],
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20
+                toggle ? Positioned(
+                  left: 0,
+                  right: 0,
+                  child: AnimatedOpacity(
+                    opacity: toggle ? 1 : 0,
+                    duration: duration,
+                    child: Text(
+                      'Tap a item to see Details',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.grey[500],
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20
+                      ),
                     ),
                   ),
                 ) :
@@ -163,6 +253,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     onTap: (){
                       insertAll();
                       toggleMenu();
+                      selectedItem = null;
                     },
                     child: Align(
                       alignment: Alignment.topRight,
@@ -247,9 +338,8 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 
   viewDetails(ItemModel item){
+    selectedItem = item;
     deleteAll();
     toggleMenu();
   }
 }
-
-enum Direction{UP,DOWN}
