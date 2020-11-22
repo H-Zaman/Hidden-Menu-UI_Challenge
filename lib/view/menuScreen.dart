@@ -126,7 +126,6 @@ class _MenuScreenState extends State<MenuScreen> {
         width: double.infinity,
         height: MediaQuery.of(context).size.height - (AppBar().preferredSize.height + AppBar().preferredSize.height),
         decoration: BoxDecoration(
-            color: Colors.lightGreenAccent,
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(50),
               topLeft: Radius.circular(50),
@@ -140,7 +139,7 @@ class _MenuScreenState extends State<MenuScreen> {
                 topLeft: Radius.circular(50),
               )
           ),
-          elevation: 10,
+          elevation: 15,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 20),
             child: Stack(
@@ -168,6 +167,7 @@ class _MenuScreenState extends State<MenuScreen> {
                             width: MediaQuery.of(context).size.width * .7,
                             child: Text(
                               selectedItem == null ? 'None' : selectedItem.title,
+                              maxLines: 3,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: 36,
